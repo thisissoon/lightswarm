@@ -106,6 +106,16 @@ func (led *LED) Off() (int, error) {
 	return led.Writer.Write(frame.Bytes())
 }
 
+// Fade to a light level
+func (led *LED) Fade(level, interval, step byte) (int, error) {
+	frame := Frame{
+		Addr:    led.Addr,
+		Cmd:     FADE_TO_LEVEL,
+		CmdArgs: []byte{level, interval, step},
+	}
+	return led.Writer.Write(frame.Bytes())
+}
+
 // Constructs a new LED
 func New(addr uint16, writer io.Writer) *LED {
 	return &LED{
