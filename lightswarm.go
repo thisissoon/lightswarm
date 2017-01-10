@@ -95,15 +95,15 @@ type LED struct {
 }
 
 // Send the On command to the LED writer
-func (led *LED) On() {
+func (led *LED) On() (int, error) {
 	frame := Frame{Addr: led.Addr, Cmd: ON}
-	led.Writer.Write(frame.Bytes())
+	return led.Writer.Write(frame.Bytes())
 }
 
 // Send the Off command to the LED writer
-func (led *LED) Off() {
+func (led *LED) Off() (int, error) {
 	frame := Frame{Addr: led.Addr, Cmd: OFF}
-	led.Writer.Write(frame.Bytes())
+	return led.Writer.Write(frame.Bytes())
 }
 
 // Constructs a new LED
