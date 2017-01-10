@@ -25,6 +25,16 @@ const (
 	FADE_RGB_TO_LEVEL          byte = 0x31 // fade rgb to level
 )
 
+type Fade struct {
+	Level    byte
+	Interval byte
+	Step     byte
+}
+
+func (f Fade) Args() []byte {
+	return []byte{f.Level, f.Interval, f.Step}
+}
+
 type Frame struct {
 	// Exported Fields
 	Addr    uint16
@@ -107,27 +117,37 @@ func (led *LED) Off() (int, error) {
 }
 
 // Fade to a light level
-func (led *LED) Fade(level, interval, step byte) (int, error) {
+func (led *LED) Fade(f Fade) (int, error) {
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     FADE_TO_LEVEL,
-		CmdArgs: []byte{level, interval, step},
+		CmdArgs: f.Args(),
 	}
 	return led.Writer.Write(frame.Bytes())
 }
 
-type FadeHandler interface {
-	Fade(level, interval, step byte) []byte
+// Set Red, Green and Blue levels
+func (led *LED) RGB(r, g, b byte) (int, error) {
+	frame := Frame{
+		Addr:    led.Addr,
+		Cmd:     SET_RGB_LEVELS,
+		CmdArgs: []byte{r, g, b},
+	}
+	return led.Writer.Write(frame.Bytes())
 }
 
-type FadeFunc func(level, interval, step byte) []byte
-
-func (f FadeFunc) Fade(level, interval, step byte) []byte {
-	return f(level, interval, step)
-}
-
-var Fade = func(level, interval, step byte) []byte {
-	return []byte{level, interval, step}
+// Fade to a RGB level
+func (led *LED) FadeRGB(r, g, b Fade) (int, error) {
+	bs := []byte{}
+	bs = append(bs, r.Args()...)
+	bs = append(bs, g.Args()...)
+	bs = append(bs, b.Args()...)
+	frame := Frame{
+		Addr:    led.Addr,
+		Cmd:     FADE_RGB_TO_LEVEL,
+		CmdArgs: bs,
+	}
+	return led.Writer.Write(frame.Bytes())
 }
 
 // Constructs a new LED
