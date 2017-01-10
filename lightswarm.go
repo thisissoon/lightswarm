@@ -7,22 +7,22 @@ import (
 
 // Byte constants
 const (
-	END byte = 192 // End byte
-	ESC byte = 219 // Escape byte
+	END byte = 0xC0 // End byte
+	ESC byte = 0xDB // Escape byte
 )
 
 // Command constants
 const (
-	ON                         byte = 32 // on
-	OFF                        byte = 33 // off
-	SET_LEVEL                  byte = 34 // set level
-	FADE_TO_LEVEL              byte = 35 // fade to level
-	SET_PSUEDO_ADDRESS         byte = 37 // set psuedo address
-	ERASE_PSUEDO_ADDRESS_TABLE byte = 38 // erase psuedo address table
-	SET_RGB_LEVELS             byte = 44 // set rgb levels
-	TOGGLE                     byte = 45 // toggle
-	FADE_MULTIPLE_TO_LEVEL     byte = 48 // fade multiple to level
-	FADE_RGB_TO_LEVEL          byte = 49 // fade rgb to level
+	ON                         byte = 0x20 // on
+	OFF                        byte = 0x21 // off
+	SET_LEVEL                  byte = 0x22 // set level
+	FADE_TO_LEVEL              byte = 0x23 // fade to level
+	SET_PSUEDO_ADDRESS         byte = 0x25 // set psuedo address
+	ERASE_PSUEDO_ADDRESS_TABLE byte = 0x26 // erase psuedo address table
+	SET_RGB_LEVELS             byte = 0x2C // set rgb levels
+	TOGGLE                     byte = 0x2D // toggle
+	FADE_MULTIPLE_TO_LEVEL     byte = 0x30 // fade multiple to level
+	FADE_RGB_TO_LEVEL          byte = 0x31 // fade rgb to level
 )
 
 type Frame struct {
@@ -57,9 +57,9 @@ func (f Frame) wrap(bs []byte) []byte {
 	for _, b := range bs {
 		switch b {
 		case END:
-			nbs = append(nbs, ESC, 220)
+			nbs = append(nbs, ESC, 0xDC)
 		case ESC:
-			nbs = append(nbs, ESC, 221)
+			nbs = append(nbs, ESC, 0xDD)
 		default:
 			nbs = append(nbs, b)
 		}
