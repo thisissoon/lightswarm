@@ -116,6 +116,20 @@ func (led *LED) Fade(level, interval, step byte) (int, error) {
 	return led.Writer.Write(frame.Bytes())
 }
 
+type FadeHandler interface {
+	Fade(level, interval, step byte) []byte
+}
+
+type FadeFunc func(level, interval, step byte) []byte
+
+func (f FadeFunc) Fade(level, interval, step byte) []byte {
+	return f(level, interval, step)
+}
+
+var Fade = func(level, interval, step byte) []byte {
+	return []byte{level, interval, step}
+}
+
 // Constructs a new LED
 func New(addr uint16, writer io.Writer) *LED {
 	return &LED{
