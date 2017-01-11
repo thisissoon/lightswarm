@@ -321,3 +321,24 @@ func TestTestFadeRGB(t *testing.T) {
 		})
 	}
 }
+
+func TestNew(t *testing.T) {
+	tt := []struct {
+		name    string
+		address uint16
+		writer  io.Writer
+	}{
+		{
+			"new 960 with ioutil.Discard writer",
+			690,
+			ioutil.Discard,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := New(tc.address, tc.writer)
+			assert.Equal(t, tc.address, led.Addr)
+			assert.Equal(t, tc.writer, led.Writer)
+		})
+	}
+}
