@@ -1,7 +1,6 @@
 package lightswarm
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -65,20 +64,23 @@ func TestFrameAddress(t *testing.T) {
 
 func TestFrameChecksum(t *testing.T) {
 	tt := []struct {
+		name     string
 		bs       []byte
 		expected byte
 	}{
 		{
+			"simple bytes",
 			[]byte{0, 1, 2, 3, 4},
 			4,
 		},
 		{
+			"real world bytes",
 			[]byte{2, 178, ON},
 			144,
 		},
 	}
-	for i, tc := range tt {
-		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
 			f := Frame{}
 			checksum := f.checksum(tc.bs)
 			assert.Equal(t, tc.expected, checksum)
