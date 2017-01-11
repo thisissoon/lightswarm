@@ -1,6 +1,8 @@
 package lightswarm
 
 import (
+	"bytes"
+	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -149,6 +151,37 @@ func TestFrameBytes(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			bs := tc.frame.Bytes()
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
+
+func TestLEDOn(t *testing.T) {
+	tt := []struct {
+		name     string
+		addr     uint16
+		buff     *bytes.Buffer
+		expected []byte
+		n        int
+		err      error
+	}{
+		{
+			"turn 690 on",
+			690,
+			bytes.NewBuffer(nil),
+			[]byte{END, 2, 178, ON, 144, END},
+			6,
+			nil,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := &LED{690, tc.buff}
+			n, err := led.On()
+			assert.Equal(t, tc.n, n)
+			assert.Equal(t, tc.err, err)
+			bs, err := ioutil.ReadAll(tc.buff)
+			assert.Nil(t, err)
 			assert.Equal(t, tc.expected, bs)
 		})
 	}
