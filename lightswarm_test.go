@@ -250,3 +250,38 @@ func TestLEDFade(t *testing.T) {
 		})
 	}
 }
+
+func TestLEDSetRGB(t *testing.T) {
+	tt := []struct {
+		name     string
+		addr     uint16
+		buff     *bytes.Buffer
+		red      byte
+		green    byte
+		blue     byte
+		expected []byte
+		n        int
+		err      error
+	}{
+		{
+			"set 690 RGB to 85, 199, 237",
+			690,
+			bytes.NewBuffer(nil),
+			85, 199, 237, // RGB
+			[]byte{END, 2, 178, SET_RGB_LEVELS, 85, 199, 237, 227, END},
+			9,
+			nil,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := &LED{tc.addr, tc.buff}
+			n, err := led.SetRGB(tc.red, tc.green, tc.blue)
+			assert.Equal(t, tc.n, n)
+			assert.Equal(t, tc.err, err)
+			bs, err := ioutil.ReadAll(tc.buff)
+			assert.Nil(t, err)
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
