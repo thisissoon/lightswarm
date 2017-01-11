@@ -7,30 +7,54 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestFadeArgs(t *testing.T) {
+	tt := []struct {
+		name     string
+		fade     Fade
+		expected []byte
+	}{
+		{
+			"fade to 255 at 1 step per 1 interval",
+			Fade{255, 1, 1},
+			[]byte{255, 1, 1},
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			bs := tc.fade.Args()
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
+
 func TestFrameAddress(t *testing.T) {
 	tt := []struct {
+		name    string
 		address uint16
 		b1      byte
 		b2      byte
 	}{
 		{
+			"lowest address (1)",
 			1,
 			0,
 			1,
 		},
 		{
+			"real address (690)",
 			690,
 			2,
 			178,
 		},
 		{
+			"maximum address (65535)",
 			65535,
 			255,
 			255,
 		},
 	}
-	for i, tc := range tt {
-		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
 			f := Frame{Addr: tc.address}
 			b1, b2 := f.address()
 			assert.Equal(t, tc.b1, b1)
