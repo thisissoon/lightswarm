@@ -146,7 +146,7 @@ func (led *LED) Fade(f Fade) (int, error) {
 }
 
 // Set Red, Green and Blue levels
-func (led *LED) RGB(r, g, b byte) (int, error) {
+func (led *LED) SetRGB(r, g, b byte) (int, error) {
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     SET_RGB_LEVELS,
