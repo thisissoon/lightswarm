@@ -1,0 +1,9 @@
+---
+engines:
+  govet:
+    enabled: true
+ratings:
+  paths:
+    - "**.go"
+exclude_paths:
+  - vendor/
