@@ -61,3 +61,44 @@ func TestFrameChecksum(t *testing.T) {
 		})
 	}
 }
+
+func TestFrameWrap(t *testing.T) {
+	tt := []struct {
+		name     string
+		bs       []byte
+		expected []byte
+	}{
+		{
+			"no bytes",
+			[]byte{},
+			[]byte{END, END},
+		},
+		{
+			"end byte in bytes",
+			[]byte{END},
+			[]byte{END, ESC, 0xDC, END},
+		},
+		{
+			"esc byte in bytes",
+			[]byte{ESC},
+			[]byte{END, ESC, 0xDD, END},
+		},
+		{
+			"turn 690 on",
+			[]byte{2, 178, ON, 144},
+			[]byte{END, 2, 178, ON, 144, END},
+		},
+		{
+			"turn 738 on",
+			[]byte{2, 226, ON, 192},
+			[]byte{END, 2, 226, ON, ESC, 0xDC, END},
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			f := Frame{}
+			frame := f.wrap(tc.bs)
+			assert.Equal(t, tc.expected, frame)
+		})
+	}
+}
