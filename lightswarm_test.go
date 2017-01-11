@@ -102,3 +102,28 @@ func TestFrameWrap(t *testing.T) {
 		})
 	}
 }
+
+func TestFrameBytes(t *testing.T) {
+	tt := []struct {
+		name     string
+		frame    Frame
+		expected []byte
+	}{
+		{
+			"turn 690 on",
+			Frame{690, ON, nil},
+			[]byte{END, 2, 178, ON, 144, END},
+		},
+		{
+			"fade 690 to 255 at 1 step per 1 interval",
+			Frame{690, FADE_TO_LEVEL, []byte{255, 1, 1}},
+			[]byte{END, 2, 178, FADE_TO_LEVEL, 255, 1, 1, 108, END},
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			bs := tc.frame.Bytes()
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
