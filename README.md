@@ -1,5 +1,7 @@
 # lightswarm
 
+[![Build Status](https://travis-ci.org/thisissoon/lightswarm.svg?branch=master)](https://travis-ci.org/thisissoon/lightswarm)
+
 A Go library for communicating with LightSwarm LED's.
 
 ## Usage
