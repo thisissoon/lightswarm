@@ -158,9 +158,9 @@ func (led *LED) SetRGB(r, g, b byte) (int, error) {
 // Fade to a RGB level
 func (led *LED) FadeRGB(r, g, b Fade) (int, error) {
 	args := []byte{}
-	args = append(bs, r.Args()...)
-	args = append(bs, g.Args()...)
-	args = append(bs, b.Args()...)
+	args = append(args, r.Args()...)
+	args = append(args, g.Args()...)
+	args = append(args, b.Args()...)
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     FADE_RGB_TO_LEVEL,
