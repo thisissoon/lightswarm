@@ -25,3 +25,6 @@ _testmain.go
 
 # Developer
 .env
+
+# Coverage Reports
+cover.*
