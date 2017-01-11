@@ -217,3 +217,36 @@ func TestLEDOff(t *testing.T) {
 		})
 	}
 }
+
+func TestLEDFade(t *testing.T) {
+	tt := []struct {
+		name     string
+		addr     uint16
+		buff     *bytes.Buffer
+		fade     Fade
+		expected []byte
+		n        int
+		err      error
+	}{
+		{
+			"fade 690 to 255 at 1 interval with 1 step",
+			690,
+			bytes.NewBuffer(nil),
+			Fade{255, 1, 1},
+			[]byte{END, 2, 178, FADE_TO_LEVEL, 255, 1, 1, 108, END},
+			9,
+			nil,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := &LED{tc.addr, tc.buff}
+			n, err := led.Fade(tc.fade)
+			assert.Equal(t, tc.n, n)
+			assert.Equal(t, tc.err, err)
+			bs, err := ioutil.ReadAll(tc.buff)
+			assert.Nil(t, err)
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
