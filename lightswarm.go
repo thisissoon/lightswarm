@@ -11,6 +11,12 @@ const (
 	ESC byte = 0xDB // Escape byte
 )
 
+// Escape Sequences
+var (
+	ENDSEQ = []byte{ESC, 0xDC} // END byte escape sequence
+	ESCSEQ = []byte{ESC, 0xDD} // ESC byte escape sequence
+)
+
 // Command constants
 const (
 	ON                         byte = 0x20 // on
@@ -67,9 +73,9 @@ func (f Frame) wrap(bs []byte) []byte {
 	for _, b := range bs {
 		switch b {
 		case END:
-			nbs = append(nbs, ESC, 0xDC)
+			nbs = append(nbs, ENDSEQ...)
 		case ESC:
-			nbs = append(nbs, ESC, 0xDD)
+			nbs = append(nbs, ESCSEQ...)
 		default:
 			nbs = append(nbs, b)
 		}
