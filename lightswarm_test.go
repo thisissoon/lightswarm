@@ -38,3 +38,26 @@ func TestFrameAddress(t *testing.T) {
 		})
 	}
 }
+
+func TestFrameChecksum(t *testing.T) {
+	tt := []struct {
+		bs       []byte
+		expected byte
+	}{
+		{
+			[]byte{0, 1, 2, 3, 4},
+			4,
+		},
+		{
+			[]byte{2, 178, ON},
+			144,
+		},
+	}
+	for i, tc := range tt {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			f := Frame{}
+			checksum := f.checksum(tc.bs)
+			assert.Equal(t, tc.expected, checksum)
+		})
+	}
+}
