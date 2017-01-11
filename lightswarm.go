@@ -78,40 +78,42 @@ func (f Frame) checksum(bs []byte) byte {
 // Wrap the given bytes in end bytes with escape sequences
 func (f Frame) wrap(bs []byte) []byte {
 	// create a new byte slice to store the wrapped frame, starting with the END byte
-	nbs := []byte{END}
+	frame := []byte{END}
 	// loop over the given byte slice, appending to the new byte slice
 	// and performing any escapes required
 	for _, b := range bs {
 		switch b {
 		case END:
-			nbs = append(nbs, ENDSEQ...)
+			frame = append(frame, ENDSEQ...)
 		case ESC:
-			nbs = append(nbs, ESCSEQ...)
+			frame = append(frame, ESCSEQ...)
 		default:
-			nbs = append(nbs, b)
+			frame = append(frame, b)
 		}
 	}
 	// now add the end byte last
-	nbs = append(nbs, END)
-	return nbs
+	frame = append(frame, END)
+	return frame
 }
 
 // Returns the frame in byte format for writing to lightswarm
 func (f Frame) Bytes() []byte {
-	bs := []byte{}
+	// Create the data frame
+	frame := []byte{}
 	// Add address bytes
 	addr1, addr2 := f.address()
-	bs = append(bs, addr1)
-	bs = append(bs, addr2)
+	frame = append(frame, addr1)
+	frame = append(frame, addr2)
 	// Add command byte
-	bs = append(bs, f.Cmd)
+	frame = append(frame, f.Cmd)
 	// Add command arg bytes
-	bs = append(bs, f.CmdArgs...)
-	// Add Checksum
-	bs = append(bs, f.checksum(bs))
+	frame = append(frame, f.CmdArgs...)
+	// Calculate & Add Checksum
+	checksum := f.checksum(frame)
+	frame = append(frame, checksum)
 	// Wrap bytes in end bytes with escape sequences
-	bs = f.wrap(bs)
-	return bs
+	frame = f.wrap(frame)
+	return frame
 }
 
 // Represents a single Lightswarm LED
@@ -155,14 +157,14 @@ func (led *LED) RGB(r, g, b byte) (int, error) {
 
 // Fade to a RGB level
 func (led *LED) FadeRGB(r, g, b Fade) (int, error) {
-	bs := []byte{}
-	bs = append(bs, r.Args()...)
-	bs = append(bs, g.Args()...)
-	bs = append(bs, b.Args()...)
+	args := []byte{}
+	args = append(bs, r.Args()...)
+	args = append(bs, g.Args()...)
+	args = append(bs, b.Args()...)
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     FADE_RGB_TO_LEVEL,
-		CmdArgs: bs,
+		CmdArgs: args,
 	}
 	return led.Writer.Write(frame.Bytes())
 }
