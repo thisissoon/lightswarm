@@ -31,16 +31,27 @@ const (
 	FADE_RGB_TO_LEVEL          byte = 0x31 // fade rgb to level
 )
 
+// Helper for easily constructing Fade commands
 type Fade struct {
 	Level    byte
 	Interval byte
 	Step     byte
 }
 
+// Command arguments
 func (f Fade) Args() []byte {
 	return []byte{f.Level, f.Interval, f.Step}
 }
 
+// Builds a data frame to be sent on the serial connection
+// A frame follows this format:
+// 1: Start Byte
+// 2: Destination Address byte 1
+// 3: Destination Address byte 2
+// 4: Command byte
+// 5: Information bytes (0 or more bytes)
+// 6: Checksum byte
+// 7: End byte
 type Frame struct {
 	// Exported Fields
 	Addr    uint16
