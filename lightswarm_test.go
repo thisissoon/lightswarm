@@ -2,6 +2,7 @@ package lightswarm
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"testing"
 
@@ -277,6 +278,41 @@ func TestLEDSetRGB(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
 			n, err := led.SetRGB(tc.red, tc.green, tc.blue)
+			assert.Equal(t, tc.n, n)
+			assert.Equal(t, tc.err, err)
+			bs, err := ioutil.ReadAll(tc.buff)
+			assert.Nil(t, err)
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
+
+func TestTestFadeRGB(t *testing.T) {
+	tt := []struct {
+		name     string
+		addr     uint16
+		buff     *bytes.Buffer
+		red      Fade
+		green    Fade
+		blue     Fade
+		expected []byte
+		n        int
+		err      error
+	}{
+		{
+			"set fade 690 RGB to 85, 199, 237",
+			690,
+			bytes.NewBuffer(nil),
+			Fade{85, 1, 1}, Fade{199, 1, 1}, Fade{237, 1, 1}, // RGB
+			[]byte{END, 2, 178, FADE_RGB_TO_LEVEL, 85, 1, 1, 199, 1, 1, 237, 1, 1, 254, END},
+			15,
+			nil,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := &LED{tc.addr, tc.buff}
+			n, err := led.FadeRGB(tc.red, tc.green, tc.blue)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
