@@ -176,8 +176,39 @@ func TestLEDOn(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			led := &LED{690, tc.buff}
+			led := &LED{tc.addr, tc.buff}
 			n, err := led.On()
+			assert.Equal(t, tc.n, n)
+			assert.Equal(t, tc.err, err)
+			bs, err := ioutil.ReadAll(tc.buff)
+			assert.Nil(t, err)
+			assert.Equal(t, tc.expected, bs)
+		})
+	}
+}
+
+func TestLEDOff(t *testing.T) {
+	tt := []struct {
+		name     string
+		addr     uint16
+		buff     *bytes.Buffer
+		expected []byte
+		n        int
+		err      error
+	}{
+		{
+			"turn 690 off",
+			690,
+			bytes.NewBuffer(nil),
+			[]byte{END, 2, 178, OFF, 145, END},
+			6,
+			nil,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			led := &LED{tc.addr, tc.buff}
+			n, err := led.Off()
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
