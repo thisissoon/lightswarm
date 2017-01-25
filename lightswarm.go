@@ -33,14 +33,21 @@ const (
 
 // Helper for easily constructing Fade commands
 type Fade struct {
-	Level    byte
-	Interval byte
-	Step     byte
+	Level    int
+	Interval int
+	Step     int
 }
 
 // Command arguments
 func (f Fade) Args() []byte {
-	return []byte{f.Level, f.Interval, f.Step}
+	if f.Interval == 0 { // 0 interval values are not supported
+		f.Interval = 1
+	}
+	return []byte{
+		byte(f.Level),
+		byte(f.Interval),
+		byte(f.Step),
+	}
 }
 
 // Builds a data frame to be sent on the serial connection
