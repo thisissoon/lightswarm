@@ -38,15 +38,36 @@ type Fade struct {
 	Step     int
 }
 
+func (f Fade) level() int {
+	if f.Level > 255 {
+		return 255
+	}
+	return f.Level
+}
+
+func (f Fade) interval() int {
+	if f.Interval == 0 { // 0 interval values are not supported
+		return 1
+	}
+	return f.Interval
+}
+
+func (f Fade) step() int {
+	if f.Step == 0 { // 0 interval values are not supported
+		return 1
+	}
+	if f.Step > 127 {
+		return 127
+	}
+	return f.Step
+}
+
 // Command arguments
 func (f Fade) Args() []byte {
-	if f.Interval == 0 { // 0 interval values are not supported
-		f.Interval = 1
-	}
 	return []byte{
-		byte(f.Level),
-		byte(f.Interval),
-		byte(f.Step),
+		byte(f.level()),
+		byte(f.interval()),
+		byte(f.step()),
 	}
 }
 
