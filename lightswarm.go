@@ -38,6 +38,7 @@ type Fade struct {
 	Step     int
 }
 
+// Returns the level to fade too, max value is 255
 func (f Fade) level() int {
 	if f.Level > 255 {
 		return 255
@@ -45,6 +46,8 @@ func (f Fade) level() int {
 	return f.Level
 }
 
+// Returns the interval step for fading in 1/100's of a second
+// 1 is the lowest allowed value and represents 1 1/100 (10ms)
 func (f Fade) interval() int {
 	if f.Interval == 0 { // 0 interval values are not supported
 		return 1
@@ -52,6 +55,8 @@ func (f Fade) interval() int {
 	return f.Interval
 }
 
+// Value to increment the light level by on each interval
+// allowed range is 1-127
 func (f Fade) step() int {
 	if f.Step == 0 { // 0 interval values are not supported
 		return 1
