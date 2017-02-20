@@ -23,6 +23,7 @@ const (
 	OFF                        byte = 0x21 // off
 	SET_LEVEL                  byte = 0x22 // set level
 	FADE_TO_LEVEL              byte = 0x23 // fade to level
+	FADE_DOWN                  byte = 0x24 // legacy fade down
 	SET_PSUEDO_ADDRESS         byte = 0x25 // set psuedo address
 	ERASE_PSUEDO_ADDRESS_TABLE byte = 0x26 // erase psuedo address table
 	SET_RGB_LEVELS             byte = 0x2C // set rgb levels
@@ -165,6 +166,16 @@ func (led *LED) On() (int, error) {
 // Send the Off command to the LED writer
 func (led *LED) Off() (int, error) {
 	frame := Frame{Addr: led.Addr, Cmd: OFF}
+	return led.Writer.Write(frame.Bytes())
+}
+
+// Fade down legacy
+func (led *LED) FadeDown(f Fade) (int, error) {
+	frame := Frame{
+		Addr:    led.Addr,
+		Cmd:     FADE_DOWN,
+		CmdArgs: f.Args(),
+	}
 	return led.Writer.Write(frame.Bytes())
 }
 
