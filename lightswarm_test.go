@@ -270,6 +270,42 @@ func TestLEDFade(t *testing.T) {
 			9,
 			nil,
 		},
+		{
+			"fade 227 to 255 at 1 interval with 3 step",
+			227,
+			bytes.NewBuffer(nil),
+			Fade{255, 1, 3},
+			[]byte{END, 0, 227, FADE_TO_LEVEL, 255, 1, 3, 61, END},
+			9,
+			nil,
+		},
+		{
+			"fade 362 to 255 at 1 interval with 3 step",
+			362,
+			bytes.NewBuffer(nil),
+			Fade{255, 1, 3},
+			[]byte{END, 1, 106, FADE_TO_LEVEL, 255, 1, 3, 181, END},
+			9,
+			nil,
+		},
+		{
+			"fade 263 to 255 at 1 interval with 3 step",
+			263,
+			bytes.NewBuffer(nil),
+			Fade{255, 1, 3},
+			[]byte{END, 1, 7, FADE_TO_LEVEL, 255, 1, 3, 216, END},
+			9,
+			nil,
+		},
+		{
+			"fade 348 to 255 at 1 interval with 3 step",
+			348,
+			bytes.NewBuffer(nil),
+			Fade{255, 1, 3},
+			[]byte{END, 1, 92, FADE_TO_LEVEL, 255, 1, 3, 131, END},
+			9,
+			nil,
+		},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
