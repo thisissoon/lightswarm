@@ -157,50 +157,60 @@ type LED struct {
 	Writer io.Writer
 }
 
+// Write to the lightswarm writer
+func (led *LED) write(frame Frame) (int, []byte, error) {
+	b := frame.Bytes()
+	n, err := led.Writer.Write(b)
+	if err != nil {
+		return 0, nil, err
+	}
+	return n, b, nil
+}
+
 // Send the On command to the LED writer
-func (led *LED) On() (int, error) {
+func (led *LED) On() (int, []byte, error) {
 	frame := Frame{Addr: led.Addr, Cmd: ON}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Send the Off command to the LED writer
-func (led *LED) Off() (int, error) {
+func (led *LED) Off() (int, []byte, error) {
 	frame := Frame{Addr: led.Addr, Cmd: OFF}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Fade down legacy
-func (led *LED) FadeDown(f Fade) (int, error) {
+func (led *LED) FadeDown(f Fade) (int, []byte, error) {
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     FADE_DOWN,
 		CmdArgs: f.Args(),
 	}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Fade to a light level
-func (led *LED) Fade(f Fade) (int, error) {
+func (led *LED) Fade(f Fade) (int, []byte, error) {
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     FADE_TO_LEVEL,
 		CmdArgs: f.Args(),
 	}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Set Red, Green and Blue levels
-func (led *LED) SetRGB(r, g, b byte) (int, error) {
+func (led *LED) SetRGB(r, g, b byte) (int, []byte, error) {
 	frame := Frame{
 		Addr:    led.Addr,
 		Cmd:     SET_RGB_LEVELS,
 		CmdArgs: []byte{r, g, b},
 	}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Fade to a RGB level
-func (led *LED) FadeRGB(r, g, b Fade) (int, error) {
+func (led *LED) FadeRGB(r, g, b Fade) (int, []byte, error) {
 	args := []byte{}
 	args = append(args, r.Args()...)
 	args = append(args, g.Args()...)
@@ -210,7 +220,7 @@ func (led *LED) FadeRGB(r, g, b Fade) (int, error) {
 		Cmd:     FADE_RGB_TO_LEVEL,
 		CmdArgs: args,
 	}
-	return led.Writer.Write(frame.Bytes())
+	return led.write(frame)
 }
 
 // Constructs a new LED

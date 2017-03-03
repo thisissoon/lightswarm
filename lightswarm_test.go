@@ -210,7 +210,8 @@ func TestLEDOn(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
-			n, err := led.On()
+			n, b, err := led.On()
+			t.Logf("%s bytes: %v", tc.name, b)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
@@ -241,7 +242,8 @@ func TestLEDOff(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
-			n, err := led.Off()
+			n, b, err := led.Off()
+			t.Logf("%s bytes: %v", tc.name, b)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
@@ -310,7 +312,8 @@ func TestLEDFade(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
-			n, err := led.Fade(tc.fade)
+			n, b, err := led.Fade(tc.fade)
+			t.Logf("%s bytes: %v", tc.name, b)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
@@ -345,7 +348,8 @@ func TestLEDSetRGB(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
-			n, err := led.SetRGB(tc.red, tc.green, tc.blue)
+			n, b, err := led.SetRGB(tc.red, tc.green, tc.blue)
+			t.Logf("%s bytes: %v", tc.name, b)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
@@ -380,7 +384,8 @@ func TestTestFadeRGB(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			led := &LED{tc.addr, tc.buff}
-			n, err := led.FadeRGB(tc.red, tc.green, tc.blue)
+			n, b, err := led.FadeRGB(tc.red, tc.green, tc.blue)
+			t.Logf("%s bytes: %v", tc.name, b)
 			assert.Equal(t, tc.n, n)
 			assert.Equal(t, tc.err, err)
 			bs, err := ioutil.ReadAll(tc.buff)
