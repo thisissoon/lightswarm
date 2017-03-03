@@ -174,6 +174,38 @@ func TestLEDOn(t *testing.T) {
 			6,
 			nil,
 		},
+		{
+			"turn 227 on",
+			227,
+			bytes.NewBuffer(nil),
+			[]byte{END, 0, 227, ON, 195, END},
+			6,
+			nil,
+		},
+		{
+			"turn 362 on",
+			362,
+			bytes.NewBuffer(nil),
+			[]byte{END, 1, 106, ON, 75, END},
+			6,
+			nil,
+		},
+		{
+			"turn 263 on",
+			263,
+			bytes.NewBuffer(nil),
+			[]byte{END, 1, 7, ON, 38, END},
+			6,
+			nil,
+		},
+		{
+			"turn 348 on",
+			348,
+			bytes.NewBuffer(nil),
+			[]byte{END, 1, 92, ON, 125, END},
+			6,
+			nil,
+		},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
